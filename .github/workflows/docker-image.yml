@@ -32,4 +32,4 @@ jobs:
           context: .
           file: ./docker-compose.yml
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/dockerIT
+          tags: ${{ secrets.DOCKER_USERNAME }}/docker-it
