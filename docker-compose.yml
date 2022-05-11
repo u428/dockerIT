@@ -1,0 +1,67 @@
+version: '4.1'
+services:
+  db:
+    container_name: db
+    image: postgres:13
+    ports:
+      - "2222:5432"
+    environment:
+      POSTGRES_DB: qorakoli_db
+      POSTGRES_USER: qorakoli_db
+      POSTGRES_PASSWORD: 12345
+    volumes:
+      - pg13data:/var/lib/postgresql/data
+    networks:
+      app-network:
+
+  backend:
+    container_name: backend
+    build:
+      dockerfile: Dockerfile
+      context: ./qorakol
+    depends_on:
+      - db
+    environment:
+      DB_SERVER: db
+      POSTGRE_DB: qorakoli_db
+      POSTGRES_USER: qorakoli_db
+      POSTGRES_PASSWORD: 12345
+      PG_URL: jdbc:postgresql://db:5432/qorakoli_db
+    ports:
+      - "2255:8080"
+    networks:
+      app-network:
+  
+  forntend:
+    container_name: frontend
+    build:
+      dockerfile: Dockerfile
+      context: ./newfront
+    depends_on:
+    - backend
+    - nginx
+
+  nginx:
+    container_name: nginx
+    image: proxy
+    build:
+      dockerfile: Dockerfile
+      context: ./.nginx
+    depends_on:
+      - backend
+    ports:
+      - 80:80
+      - 443:443
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db:
+  pg13data:
+  backend:
+  frontend:
+  postgrs_admin:
+  nginx:
+
