@@ -31,7 +31,8 @@ services:
       - "2255:8080"
     networks:
       app-network:
-  
+
+
   forntend:
     container_name: frontend
     build:
@@ -39,19 +40,11 @@ services:
       context: ./newfront
     depends_on:
     - backend
-    - nginx
-
-  nginx:
-    container_name: nginx
-    image: proxy
-    build:
-      dockerfile: Dockerfile
-      context: ./.nginx
-    depends_on:
-      - backend
     ports:
-      - 80:80
-      - 443:443
+      - "80:80"
+    networks:
+      app-network:
+
 
 networks:
   app-network:
@@ -62,6 +55,4 @@ volumes:
   pg13data:
   backend:
   frontend:
-  postgrs_admin:
-  nginx:
 

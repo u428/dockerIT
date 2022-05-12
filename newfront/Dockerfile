@@ -26,11 +26,18 @@ COPY ./*.json /app/
 #COPY ./*.lock /app/
 #COPY ./.npmrc /app/
 #RUN npm config set -- "//gitlab.com/api/v4/projects/30733369/packages/npm/:_authToken" "2Q5vR1ShQ-sv9img5khy"
-RUN npm config
-RUN npm install
+#RUN npm config
+RUN #npm install
+RUN yarn --silent
 COPY . /app
-RUN npm run build
+RUN yarn build
+#FROM nginx:1.21.6
 
+FROM nginx:1.21.6-alpine
+#RUN rm -f /usr/share/nginx/html
+#RUN mkdir "/usr/share/nginx/html"
 COPY --from=build /app/build /usr/share/nginx/html
-
-
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
